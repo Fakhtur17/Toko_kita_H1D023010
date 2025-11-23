@@ -30,3 +30,18 @@ Pada halaman ProdukPage, terdapat pula ikon tambah produk di bagian AppBar. Keti
 Selain fungsi tambah, edit, dan melihat produk, ProdukPage juga menyediakan menu Logout pada drawer. Ketika menu ini ditekan, drawer ditutup lebih dahulu, lalu aplikasi mengembalikan pengguna ke LoginPage menggunakan Navigator.pushAndRemoveUntil, yang artinya seluruh halaman sebelumnya benar-benar dihapus dari history. Dengan demikian, pengguna tidak bisa kembali ke ProdukPage dengan menekan tombol back setelah logout. Ini merupakan salah satu praktik standar keamanan dalam aplikasi autentikasi.
 
 Secara keseluruhan, hubungan antarhalaman aplikasi Tokokita mengikuti alur yang logis dan terstruktur. Aplikasi dimulai dari LoginPage, kemudian mengalir ke ProdukPage setelah autentikasi berhasil. Dari ProdukPage, pengguna dapat mengakses ProdukForm untuk menambah produk baru atau melalui ProdukDetail untuk mengedit produk yang sudah ada. Pengguna juga dapat kembali ke halaman login melalui fitur logout. Melalui struktur tersebut, aplikasi berhasil membangun alur CRUD produk lengkap yang elegan dan mudah dipahami. Model data digunakan secara konsisten untuk mengelola informasi produk, login, dan registrasi. Navigasi antarhalaman menggunakan berbagai jenis Navigator (push, pushReplacement, pushAndRemoveUntil) untuk memastikan kontrol penuh terhadap perpindahan halaman dan keamanan alur aplikasi. Semua ini menjadikan aplikasi Tokokita sebagai contoh implementasi Flutter multihalaman yang baik, terstruktur, aman, dan mudah dikembangkan menjadi aplikasi toko online yang sesungguhnya.
+
+<img width="678" height="892" alt="image" src="https://github.com/user-attachments/assets/67f1c712-f2aa-45fc-8033-d5f73f33ab64" />
+
+<img width="679" height="895" alt="image" src="https://github.com/user-attachments/assets/82a6155b-6afe-4fc5-986f-3171ba50102b" />
+
+<img width="677" height="889" alt="image" src="https://github.com/user-attachments/assets/2004610b-d30c-4def-a099-bc4fab27e31a" />
+
+<img width="677" height="886" alt="image" src="https://github.com/user-attachments/assets/63aedb7d-e058-4ee5-9c01-20fa421d87d1" />
+
+<img width="676" height="883" alt="image" src="https://github.com/user-attachments/assets/781d8396-bdf5-4e40-99e5-c68790251f2a" />
+
+<img width="665" height="889" alt="image" src="https://github.com/user-attachments/assets/acf856df-2041-43f7-8117-4145dba6a179" />
+
+
+
