@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tokokita/ui/registrasi_page.dart';
+import 'package:tokokita/bloc/login_bloc.dart';
+import 'package:tokokita/helpers/user_info.dart';
 import 'package:tokokita/ui/produk_page.dart';
+import 'package:tokokita/ui/registrasi_page.dart';
+import 'package:tokokita/widget/warning_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -14,8 +17,9 @@ class _LoginPageState extends State<LoginPage> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   bool _obscure = true;
+
+  bool _isLoading = false; // <<< penting
 
   @override
   void dispose() {
@@ -52,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // ===============================
-  // Header Atas
+  // Header
   // ===============================
   Widget _header() {
     return Column(
@@ -121,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // ===============================
-  // TextField Email
+  // Email
   // ===============================
   Widget _emailField() {
     return TextFormField(
@@ -132,19 +136,7 @@ class _LoginPageState extends State<LoginPage> {
       decoration: InputDecoration(
         hintText: "contoh@gmail.com",
         prefixIcon: const Icon(Icons.email_outlined),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 14,
-        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.blue, width: 1.4),
-        ),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) return "Email harus diisi";
@@ -155,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // ===============================
-  // TextField Password
+  // Password
   // ===============================
   Widget _passwordField() {
     return TextFormField(
@@ -169,19 +161,7 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: () => setState(() => _obscure = !_obscure),
           icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 14,
-        ),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.blue, width: 1.4),
-        ),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) return "Password harus diisi";
@@ -192,34 +172,75 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   // ===============================
-  // Tombol Login
+  // Tombol Login (LOGIKA SUDAH SAMA)
   // ===============================
   Widget _buttonLogin() {
     return SizedBox(
       width: double.infinity,
       height: 48,
       child: ElevatedButton(
+        onPressed: () {
+          var validate = _formKey.currentState!.validate();
+          if (validate && !_isLoading) {
+            _submit(); // <<< PENTING
+          }
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.blue,
           foregroundColor: Colors.white,
-          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const ProdukPage()),
-            );
-          }
-        },
-        child: const Text(
-          "Login",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
+        child: _isLoading
+            ? const CircularProgressIndicator(color: Colors.white)
+            : const Text(
+                "Login",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
       ),
+    );
+  }
+
+  // ===============================
+  // LOGIKA LOGIN BLOC (ASLINYA TOKOKITA)
+  // ===============================
+  void _submit() {
+    setState(() => _isLoading = true);
+
+    LoginBloc.login(
+      email: _emailController.text,
+      password: _passwordController.text,
+    ).then(
+      (value) async {
+        setState(() => _isLoading = false);
+
+        if (value.status == true) {
+          await UserInfo().setToken(value.token.toString());
+          await UserInfo().setUserID(int.parse(value.userID.toString()));
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ProdukPage()),
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (_) => const WarningDialog(
+              description: "Login gagal, silahkan coba lagi",
+            ),
+          );
+        }
+      },
+      onError: (error) {
+        setState(() => _isLoading = false);
+        showDialog(
+          context: context,
+          builder: (_) => const WarningDialog(
+            description: "Login gagal, silahkan coba lagi",
+          ),
+        );
+      },
     );
   }
 
@@ -240,7 +261,7 @@ class _LoginPageState extends State<LoginPage> {
           },
           child: const Text(
             "Registrasi",
-            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w700),
+            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
           ),
         ),
       ],

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tokokita/bloc/registrasi_bloc.dart';
+import 'package:tokokita/widget/success_dialog.dart';
+import 'package:tokokita/widget/warning_dialog.dart';
 
 class RegistrasiPage extends StatefulWidget {
   const RegistrasiPage({Key? key}) : super(key: key);
@@ -18,6 +21,8 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
 
   bool _obscurePass = true;
   bool _obscureConfirm = true;
+
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -59,9 +64,9 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
     );
   }
 
-  // ===============================
+  // =============================
   // Header Atas
-  // ===============================
+  // =============================
   Widget _header() {
     return Column(
       children: const [
@@ -88,9 +93,9 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
     );
   }
 
-  // ===============================
+  // =============================
   // Card Form Registrasi
-  // ===============================
+  // =============================
   Widget _cardRegistrasi() {
     return Container(
       width: double.infinity,
@@ -146,9 +151,9 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
     );
   }
 
-  // ===============================
+  // =============================
   // Field Nama
-  // ===============================
+  // =============================
   Widget _namaField() {
     return TextFormField(
       controller: _namaController,
@@ -164,9 +169,9 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
     );
   }
 
-  // ===============================
+  // =============================
   // Field Email
-  // ===============================
+  // =============================
   Widget _emailField() {
     return TextFormField(
       controller: _emailController,
@@ -183,9 +188,9 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
     );
   }
 
-  // ===============================
+  // =============================
   // Field Password
-  // ===============================
+  // =============================
   Widget _passwordField() {
     return TextFormField(
       controller: _passwordController,
@@ -206,9 +211,9 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
     );
   }
 
-  // ===============================
+  // =============================
   // Field Konfirmasi Password
-  // ===============================
+  // =============================
   Widget _passwordKonfirmasiField() {
     return TextFormField(
       controller: _passwordKonfirmasiController,
@@ -233,9 +238,9 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
     );
   }
 
-  // ===============================
-  // Tombol Registrasi
-  // ===============================
+  // =============================
+  // Tombol Registrasi (sesuai permintaan)
+  // =============================
   Widget _buttonRegistrasi() {
     return SizedBox(
       width: double.infinity,
@@ -250,25 +255,83 @@ class _RegistrasiPageState extends State<RegistrasiPage> {
           ),
         ),
         onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            // TODO: simpan registrasi kalau sudah ada servicenya
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Registrasi berhasil!")),
-            );
-            Navigator.pop(context); // balik ke login
+          var validate = _formKey.currentState!.validate();
+          if (validate) {
+            if (!_isLoading) _submit();
           }
         },
-        child: const Text(
-          "Registrasi",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
+        child: _isLoading
+            ? const CircularProgressIndicator(color: Colors.white)
+            : const Text(
+                "Registrasi",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
       ),
     );
   }
 
-  // ===============================
-  // Dekorasi Input biar konsisten
-  // ===============================
+  // =============================
+  // Fungsi Submit (sesuai permintaan)
+  // =============================
+  void _submit() {
+    _formKey.currentState!.save();
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    RegistrasiBloc.registrasi(
+      nama: _namaController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
+    ).then(
+      (value) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        // cek berdasarkan code / status dari API
+        if (value.status == true) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) => SuccessDialog(
+              description: value.data ?? "Registrasi berhasil, silahkan login",
+              okClick: () {
+                Navigator.pop(context); // tutup dialog
+              },
+            ),
+          );
+        } else {
+          // kalau status false / kode bukan 2xx
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) => WarningDialog(
+              description: value.data ?? "Registrasi gagal, silahkan coba lagi",
+            ),
+          );
+        }
+      },
+      onError: (error) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => const WarningDialog(
+            description: "Registrasi gagal, silahkan coba lagi",
+          ),
+        );
+      },
+    );
+  }
+
+  // =============================
+  // Dekorasi input konsisten
+  // =============================
   InputDecoration _inputDecoration({
     required String hint,
     required IconData icon,
