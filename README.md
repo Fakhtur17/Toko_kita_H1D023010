@@ -21,6 +21,11 @@ Halaman RegistrasiPage dirancang untuk menangani pembuatan akun baru oleh penggu
 
 Proses Registrasi
 
+<img width="1583" height="877" alt="image" src="https://github.com/user-attachments/assets/5d5cd449-a198-4cca-8210-8bdcb5ee8675" />
+
+<img width="1575" height="885" alt="image" src="https://github.com/user-attachments/assets/a9513d63-28dd-4283-9cd8-53b043475fbf" />
+
+
 Halaman registrasi diimplementasikan pada kelas RegistrasiPage yang juga merupakan StatefulWidget. Secara tampilan, halaman ini memiliki AppBar berwarna biru dengan judul “Registrasi Ramadhan Fakhtur Rakhman”, lalu di bagian isi terdapat header berbentuk CircleAvatar dengan ikon orang dan teks “Buat Akun Tokokita”, sehingga secara visual konsisten dengan tema aplikasi. Di bawah header terdapat sebuah card putih yang berisi form registrasi. Form tersebut juga menggunakan GlobalKey<FormState> yang sama seperti di halaman login untuk memudahkan proses validasi. Di dalam form, terdapat empat buah TextFormField, yaitu untuk nama lengkap, email, password, dan konfirmasi password. Tiap field menggunakan dekorasi konsisten yang dihasilkan oleh fungsi _inputDecoration, sehingga semua input memiliki border melengkung, ikon di sisi kiri (prefixIcon), dan gaya tampilan yang seragam.
 
 Field nama menggunakan validator yang memastikan bahwa pengguna wajib mengisi nama dan panjang nama minimal tiga karakter, sehingga input tidak kosong dan cukup informatif. Field email menggunakan keyboardType: TextInputType.emailAddress dengan validator sederhana yang memastikan email tidak kosong dan mengandung karakter @. Field password dan konfirmasi password keduanya menggunakan obscureText yang dikontrol oleh variabel _obscurePass dan _obscureConfirm, sehingga pengguna bisa menampilkan atau menyembunyikan isi password melalui tombol ikon mata pada suffixIcon. Validator field password memastikan password tidak kosong dan minimal terdiri dari enam karakter. Sementara itu, validator pada field konfirmasi password memastikan bahwa input tidak kosong dan harus sama persis dengan isi _passwordController.text. Jika keduanya berbeda, pesan kesalahan “Konfirmasi password tidak sama” akan ditampilkan, mencegah pengguna mengirimkan password yang salah ketik.
