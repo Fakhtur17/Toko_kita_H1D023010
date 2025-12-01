@@ -7,6 +7,12 @@ Pada halaman LoginPage, aplikasi menyajikan antarmuka modern yang dibangun denga
 
 Proses Login
 
+<img width="1574" height="893" alt="image" src="https://github.com/user-attachments/assets/58743622-f988-4b5c-bab6-308448d90344" />
+
+<img width="1572" height="876" alt="image" src="https://github.com/user-attachments/assets/b678a653-9e8b-4098-9e2c-575a1adc0ee2" />
+
+
+
 Halaman login diimplementasikan pada kelas LoginPage yang merupakan sebuah StatefulWidget. Ketika aplikasi dibuka, pengguna akan langsung diarahkan ke halaman ini. Tampilan utamanya terdiri dari sebuah AppBar dengan judul “Login Ramadhan Fakhtur Rakhman”, lalu di bagian isi terdapat form yang dibungkus Form dengan sebuah GlobalKey<FormState> untuk menangani proses validasi. Di dalam form ini terdapat dua buah TextFormField, masing-masing untuk input email dan password. Field email menggunakan keyboardType: TextInputType.emailAddress agar keyboard menyesuaikan, dan memiliki validator yang memastikan bahwa nilai tidak boleh kosong dan harus mengandung karakter @ sebagai validasi sederhana format email. Field password dibuat dengan properti obscureText yang dikontrol oleh variabel _obscure, sehingga pengguna bisa menampilkan atau menyembunyikan karakter password melalui ikon mata pada suffixIcon. Validator pada field password memastikan bahwa password tidak boleh kosong dan minimal terdiri dari empat karakter, sehingga pengguna tidak bisa mengirimkan password yang terlalu pendek.
 
 Di bawah kedua field tersebut terdapat sebuah tombol ElevatedButton sebagai tombol “Login”. Tombol ini dibungkus dalam SizedBox agar lebarnya memenuhi layar dan tinggi konsisten. Ketika tombol ditekan, aplikasi terlebih dahulu memanggil validate() pada _formKey.currentState. Jika salah satu field tidak valid, pesan kesalahan akan muncul di bawah field yang bermasalah dan proses berhenti. Jika semua input valid dan kondisi _isLoading bernilai false, maka fungsi _submit() dipanggil. Variabel _isLoading digunakan sebagai indikator proses asynchronous; ketika bernilai true, tombol akan menampilkan widget CircularProgressIndicator berwarna putih menggantikan teks “Login”, sehingga pengguna tahu bahwa aplikasi sedang memproses permintaan dan tidak bisa menekan tombol berkali-kali. Setelah proses selesai, _isLoading dikembalikan ke false supaya tombol kembali normal.
